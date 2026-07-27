@@ -1,0 +1,21 @@
+services:
+  gui:
+    environment:
+      ACCEPT_EULA: ${ACCEPT_EULA:-Y}
+      PRIVACY_CONSENT: ${PRIVACY_CONSENT:-N}
+      PRIVACY_USERID: ${PRIVACY_USERID:-}
+      DISPLAY: ${DISPLAY}
+      ISAACSIM_HOST: ${ISAACSIM_HOST:-127.0.0.1}
+      ISAACSIM_SIGNAL_PORT: ${ISAACSIM_SIGNAL_PORT:-49100}
+      ISAACSIM_STREAM_PORT: ${ISAACSIM_STREAM_PORT:-47998}
+    volumes:
+      - ${ISAAC_STORAGE_ROOT}/cache/isaac-sim/main:/isaac-sim/.cache:rw
+      - ${ISAAC_STORAGE_ROOT}/cache/isaac-sim/computecache:/isaac-sim/.nv/ComputeCache:rw
+      - ${ISAAC_STORAGE_ROOT}/cache/ov/hub:/var/cache/hub:rw
+      - ${ISAAC_STORAGE_ROOT}/logs/isaac-sim:/isaac-sim/.nvidia-omniverse/logs:rw
+      - ${ISAAC_STORAGE_ROOT}/projects/isaac-sim/config:/isaac-sim/.nvidia-omniverse/config:rw
+      - ${ISAAC_STORAGE_ROOT}/projects/isaac-sim/data:/isaac-sim/.local/share/ov/data:rw
+      - ${ISAAC_STORAGE_ROOT}/projects/isaac-sim/pkg:/isaac-sim/.local/share/ov/pkg:rw
+      - ${ISAAC_STORAGE_ROOT}/assets:/mnt/nvme/isaac/assets:rw
+      - ${ISAAC_STORAGE_ROOT}/datasets:/mnt/nvme/isaac/datasets:rw
+      - ${XAUTHORITY}:/isaac-sim/.Xauthority:rw

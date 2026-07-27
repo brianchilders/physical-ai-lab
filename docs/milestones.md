@@ -9,15 +9,15 @@ This file tracks the major implementation checkpoints for the lab.
 - [x] create documentation structure
 - [x] define workspace layout
 - [x] add simulator container scaffolding
-- [ ] validate Isaac Sim installation path
-- [ ] document first simulation run
+- [x] validate Isaac Sim installation path
+- [x] document first simulation run
 - [ ] define ROS 2 workspace strategy
 - [ ] define DGX Spark inference topology
 
 ## Current Focus
 
-Phase 2: Isaac Sim deployment infrastructure and validation.
+Phase 3: first successful headless Isaac Sim launch, smoke test, and teardown documentation.
 
 ## Next Checkpoint
 
-Phase 2: Isaac Sim reproducible deployment contract and validation.
+Phase 4: ROS 2 workspace strategy and sensor/device bring-up.
