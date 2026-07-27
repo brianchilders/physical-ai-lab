@@ -1,0 +1,8 @@
+/World (Xform)
+  /World/Ground (Mesh)
+  /World/Light (DistantLight)
+  /World/Lab (Xform)
+    /World/Lab/RedCube (Cube)
+    /World/Lab/BlueSphere (Sphere)
+    /World/Lab/Marker (Cylinder)
+  /World/Camera (Camera)

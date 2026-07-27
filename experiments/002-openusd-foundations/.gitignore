@@ -1,0 +1,10 @@
+*.usd
+*.usda
+*.log
+*.out
+*.err
+output/*
+results/*
+!output/.gitkeep
+!results/.gitkeep
+!results/summary.md

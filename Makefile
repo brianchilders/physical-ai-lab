@@ -1,7 +1,7 @@
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 ISAAC_IMAGE_REF := $(shell bash -lc 'set -euo pipefail; cd "$(REPO_ROOT)"; source scripts/lib/env.sh; load_lab_env; isaac_image_ref')
 
-.PHONY: help prepare-storage storage validate config-check compose-check image-status pull-image prepare-runtime-ownership validate-runtime-ownership prepare-smoke-runtime-ownership validate-smoke-runtime-ownership run-headless run-gui logs stop launch-headless launch-gui validate-host
+.PHONY: help prepare-storage storage validate config-check compose-check image-status pull-image prepare-runtime-ownership validate-runtime-ownership prepare-smoke-runtime-ownership validate-smoke-runtime-ownership prepare-openusd-lab prepare-openusd-lab-ownership validate-openusd-lab-ownership validate-openusd-lab run-openusd-lab inspect-openusd-lab run-headless run-gui logs stop launch-headless launch-gui validate-host
 
 help:
 	@printf '%s\n' "Targets:"
@@ -15,6 +15,12 @@ help:
 	@printf '%s\n' "  make validate-runtime-ownership - verify approved Isaac runtime ownership and writability"
 	@printf '%s\n' "  make prepare-smoke-runtime-ownership - chown smoke runtime paths when CONFIRM_CHOWN=1"
 	@printf '%s\n' "  make validate-smoke-runtime-ownership - verify smoke runtime ownership and writability"
+	@printf '%s\n' "  make prepare-openusd-lab - create OpenUSD foundations directories"
+	@printf '%s\n' "  make prepare-openusd-lab-ownership - chown OpenUSD foundations paths when CONFIRM_CHOWN=1"
+	@printf '%s\n' "  make validate-openusd-lab-ownership - verify OpenUSD foundations ownership"
+	@printf '%s\n' "  make validate-openusd-lab - run Phase 4 static validation checks"
+	@printf '%s\n' "  make run-openusd-lab - launch the OpenUSD foundations lab in Isaac Sim"
+	@printf '%s\n' "  make inspect-openusd-lab - inspect the saved OpenUSD stage in Isaac Sim"
 	@printf '%s\n' "  make run-headless     - launch Isaac Sim headless via Compose"
 	@printf '%s\n' "  make run-gui          - launch Isaac Sim GUI via Compose"
 	@printf '%s\n' "  make logs             - follow Isaac Sim container logs"
@@ -63,6 +69,24 @@ prepare-smoke-runtime-ownership:
 
 validate-smoke-runtime-ownership:
 	./scripts/validate-smoke-runtime-ownership.sh
+
+prepare-openusd-lab:
+	./scripts/prepare-openusd-foundations.sh
+
+prepare-openusd-lab-ownership:
+	./scripts/prepare-openusd-foundations-ownership.sh
+
+validate-openusd-lab-ownership:
+	./scripts/validate-openusd-foundations-ownership.sh
+
+validate-openusd-lab:
+	./tests/phase4-refinement.sh all
+
+run-openusd-lab:
+	./scripts/run-openusd-foundations.sh
+
+inspect-openusd-lab:
+	./scripts/inspect-openusd-foundations.sh
 
 run-headless:
 	./launch-headless.sh

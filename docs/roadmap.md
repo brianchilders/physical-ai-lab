@@ -47,6 +47,25 @@ Deliverables:
 
 ## Phase 4
 
+Status: complete
+
+Goal:
+
+- introduce OpenUSD foundations in a controlled, documented way
+
+Deliverables:
+
+- stage authoring lab
+- prim and hierarchy inspection
+- text and binary USD save/reopen examples
+- stage validation helpers
+
+Next milestone:
+
+- Phase 4C / Phase 5: USD layers, references, and composition to prepare for future real-world environment ingestion such as OVER USDZ captures
+
+## Phase 5
+
 Goal:
 
 - introduce ROS 2 in a controlled, documented way
@@ -57,7 +76,7 @@ Deliverables:
 - message and topic conventions
 - simulator-to-ROS bridge documentation
 
-## Phase 5
+## Phase 6
 
 Goal:
 

@@ -25,16 +25,19 @@
 - Phase 3 first successful headless Isaac Sim launch complete
 - Minimal Python smoke test complete with immediate-shutdown teardown fix
 - Lifecycle stop path validated with the headless Compose profile
+- Phase 4A OpenUSD stage authoring complete
+- Phase 4B OpenUSD scene inspection complete
+- Phase 4 overall complete
 
 ## Current Phase
 
-Phase 3 complete. Phase 4 remains deferred.
+Phase 4 complete. Next up is Phase 4C / Phase 5: USD layers, references, and composition.
 
 ## Pending Work
 
 - ROS 2 integration deferred
 - DGX Spark integration deferred
-- Phase 4 planning not started
+- USD layers, references, and composition planning
 
 ## Known Limitations
 
@@ -48,6 +51,7 @@ Phase 3 complete. Phase 4 remains deferred.
 - the approved runtime ownership prep target is guarded and limited to the dedicated Isaac directories only
 - the smoke-test teardown path now uses immediate shutdown to avoid the post-close segmentation fault seen in the first attempt
 - `make stop` requires the headless Compose profile to remove the project cleanly
+- Phase 4 is complete; future composition work will prepare for real-world environment ingestion such as OVER USDZ captures
 
 ## Next Milestone
 

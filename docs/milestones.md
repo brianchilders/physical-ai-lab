@@ -16,8 +16,8 @@ This file tracks the major implementation checkpoints for the lab.
 
 ## Current Focus
 
-Phase 3: first successful headless Isaac Sim launch, smoke test, and teardown documentation.
+Phase 4: OpenUSD foundations, stage authoring, and reusable scene inspection. Complete.
 
 ## Next Checkpoint
 
-Phase 4: ROS 2 workspace strategy and sensor/device bring-up.
+Phase 4C / Phase 5: USD layers, references, and composition, then ROS 2 workspace strategy and sensor/device bring-up.

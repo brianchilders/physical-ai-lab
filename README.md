@@ -88,8 +88,9 @@ Supporting documentation:
 1. Phase 1: platform foundation, documentation, and repository organization.
 2. Phase 2: Isaac Sim deployment infrastructure, validation, and reproducible launch contract.
 3. Phase 3: controlled first-launch validation, smoke-test harnesses, and experiment records.
-4. Phase 4: ROS 2 integration and sensor/device bring-up.
-5. Phase 5: distributed inference and lab-scale automation, including DGX Spark integration.
+4. Phase 4: OpenUSD foundations, stage authoring, and reusable scene inspection. Complete.
+5. Phase 5: ROS 2 integration and sensor/device bring-up.
+6. Phase 6: distributed inference and lab-scale automation, including DGX Spark integration.
 
 ## Storage Convention
 
@@ -135,6 +136,10 @@ Phase 2 entry points:
 - `./stop.sh`
 
 Phase 3 first-launch artifacts live under `experiments/001-first-launch/` and record the initial successful headless launch, smoke test, and teardown behavior.
+
+Phase 4 OpenUSD foundations artifacts live under `experiments/002-openusd-foundations/` and record the first reproducible stage-authoring and inspection lab.
+
+The next milestone is Phase 4C / Phase 5: USD layers, references, and composition, which will prepare the lab for future real-world environment ingestion such as OVER USDZ captures.
 
 ## Working Rules
 
