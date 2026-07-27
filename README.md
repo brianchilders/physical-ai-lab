@@ -16,6 +16,16 @@ Phase 2 prepares the Isaac Sim deployment boundary:
 
 Isaac Sim is not being installed yet. ROS 2 is intentionally deferred.
 
+## Optional Developer Tools
+
+The repository scripts are designed to work on a standard Ubuntu install without Ripgrep.
+These tools are still useful during local development:
+
+- `ripgrep` for fast ad hoc search
+- `shellcheck` for shell linting
+
+If they are not installed, the validation and refinement tests fall back to portable shell commands or skip the lint step.
+
 ## Current Hardware
 
 - Development workstation: `blackmagic`

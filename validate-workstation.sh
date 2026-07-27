@@ -41,6 +41,7 @@ main() {
   validate_docker
   validate_vulkan
   validate_isaac
+  validate_runtime
 
   validation_summary
 }

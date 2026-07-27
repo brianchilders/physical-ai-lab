@@ -1,5 +1,7 @@
 validate_host() {
   validation_section "Host"
+  local start_failures="$VALIDATION_FAILURES"
+  local status="PASS"
 
   if [[ -r /etc/os-release ]]; then
     # shellcheck disable=SC1091
@@ -25,5 +27,10 @@ validate_host() {
   else
     validation_pass "Session appears to be local"
   fi
-}
 
+  if (( VALIDATION_FAILURES > start_failures )); then
+    status="FAIL"
+  fi
+
+  validation_set_readiness "Host" "$status"
+}

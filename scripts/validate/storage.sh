@@ -2,14 +2,18 @@ readonly STORAGE_ROOT="${ISAAC_STORAGE_ROOT:-/mnt/nvme/isaac}"
 
 validate_storage() {
   validation_section "Storage"
+  local start_failures="$VALIDATION_FAILURES"
+  local status="PASS"
 
   if [[ ! -d "$NVME_ROOT" ]]; then
     validation_fail "$NVME_ROOT does not exist"
+    validation_set_readiness "Storage" "FAIL"
     return
   fi
 
   if ! findmnt -rn "$NVME_ROOT" >/dev/null 2>&1; then
     validation_fail "$NVME_ROOT is not mounted"
+    validation_set_readiness "Storage" "FAIL"
     return
   fi
 
@@ -43,4 +47,10 @@ validate_storage() {
       validation_fail "Missing directory: $dir"
     fi
   done
+
+  if (( VALIDATION_FAILURES > start_failures )); then
+    status="FAIL"
+  fi
+
+  validation_set_readiness "Storage" "$status"
 }

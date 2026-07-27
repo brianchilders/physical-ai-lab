@@ -63,6 +63,17 @@ If no local image exists, the script warns instead of forcing a download.
 
 The validation path does not install software, start a simulator container, or modify network settings.
 
+The container-level GPU smoke test is reported as `Container GPU readiness` because it verifies Docker GPU passthrough only.
+`Isaac runtime readiness` is reserved for the phase where the simulator itself actually starts.
+
+## Headless Vulkan
+
+Headless validation deliberately removes graphical session variables before invoking `vulkaninfo`.
+That keeps SSH-based validation independent from local X11 or Wayland state.
+
+If a local desktop session is present, the validator can report optional surface information separately.
+GUI mode remains a local-session path and is not advertised for ordinary SSH use.
+
 ## Recommended Readout
 
 Before a launch, you want to see:

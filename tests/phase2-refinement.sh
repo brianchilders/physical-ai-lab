@@ -12,13 +12,19 @@ fail() {
   exit 1
 }
 
+discover_shell_scripts() {
+  (
+    cd "$repo_root" && find . -type f -name '*.sh' -not -path './.git/*' | sort
+  )
+}
+
 run_shellcheck() {
   if ! command -v shellcheck >/dev/null 2>&1; then
     printf 'SKIP: shellcheck is not installed\n'
     return 0
   fi
 
-  mapfile -t sh_files < <(cd "$repo_root" && rg --files -g '*.sh')
+  mapfile -t sh_files < <(discover_shell_scripts)
   if ((${#sh_files[@]} == 0)); then
     printf 'SKIP: no shell scripts found\n'
     return 0
@@ -28,9 +34,9 @@ run_shellcheck() {
 }
 
 run_bash_syntax() {
-  mapfile -t sh_files < <(cd "$repo_root" && rg --files -g '*.sh')
+  mapfile -t sh_files < <(discover_shell_scripts)
   if ((${#sh_files[@]} == 0)); then
-    fail 'No shell scripts found'
+    fail 'No shell scripts found with portable find discovery'
   fi
 
   bash -n "${sh_files[@]/#/$repo_root/}"
@@ -53,15 +59,17 @@ run_config_check() {
     [[ "$ISAAC_SIM_TAG" == "9.9.9" ]] || fail "Shell environment did not win precedence"
   )
 
-  rg -n '^ISAAC_STORAGE_ROOT=' "$repo_root/.env.example" >/dev/null 2>&1 && \
+  grep -n -E '^ISAAC_STORAGE_ROOT=' "$repo_root/.env.example" >/dev/null 2>&1 && \
     fail '.env.example should not define ISAAC_STORAGE_ROOT'
-  rg -n '^ISAAC_SIM_(REGISTRY|REPOSITORY|TAG)=' "$repo_root/.env.example" >/dev/null 2>&1 && \
+  grep -n -E '^ISAAC_SIM_(REGISTRY|REPOSITORY|TAG)=' "$repo_root/.env.example" >/dev/null 2>&1 && \
     fail '.env.example should not define pinned Isaac Sim image variables'
+  grep -n -E '^(DISPLAY|XAUTHORITY)=' "$repo_root/.env.example" >/dev/null 2>&1 && \
+    fail '.env.example should not define GUI session defaults'
 
   [[ -f "$repo_root/config/lab.env.example" ]] || fail "Missing config/lab.env.example"
   [[ -f "$repo_root/.env.example" ]] || fail "Missing .env.example"
 
-  if rg -n '/mnt/nvme/(cache|assets|datasets|logs|projects)' \
+  if grep -R -n -E '/mnt/nvme/(cache|assets|datasets|logs|projects)' \
     "$repo_root/docker/isaac/compose.yaml" \
     "$repo_root/docs" \
     "$repo_root/assets/README.md" \
@@ -83,6 +91,9 @@ run_compose_check() {
   compose_env="$(mktemp)"
   trap 'rm -f "${compose_env:-}"' EXIT
   write_compose_env_file "$compose_env"
+  if ! grep -n -E '^XAUTHORITY=' "$compose_env" >/dev/null 2>&1; then
+    printf 'XAUTHORITY=/tmp/.Xauthority\n' >>"$compose_env"
+  fi
 
   docker compose \
     --env-file "$compose_env" \
@@ -102,8 +113,12 @@ run_image_status() {
   fi
 }
 
+run_fixture_tests() {
+  "$repo_root/tests/validation-fixtures.sh" all
+}
+
 run_policy_check() {
-  if rg -n 'docker pull|docker login' \
+  if grep -R -n -E 'docker pull|docker login' \
     "$repo_root/launch-headless.sh" \
     "$repo_root/launch-gui.sh" \
     "$repo_root/stop.sh" \
@@ -112,19 +127,19 @@ run_policy_check() {
     fail 'Found forbidden automatic pull/login commands'
   fi
 
-  if rg -n 'privileged:' "$repo_root/docker/isaac/compose.yaml" >/dev/null 2>&1; then
+  if grep -n -E 'privileged:' "$repo_root/docker/isaac/compose.yaml" >/dev/null 2>&1; then
     fail 'Found privileged container setting'
   fi
 
-  if rg -n '/var/run/docker.sock' "$repo_root/docker/isaac/compose.yaml" >/dev/null 2>&1; then
+  if grep -n -E '/var/run/docker.sock' "$repo_root/docker/isaac/compose.yaml" >/dev/null 2>&1; then
     fail 'Found Docker socket mount'
   fi
 
-  if rg -n 'docker run' "$repo_root/launch-headless.sh" "$repo_root/launch-gui.sh" "$repo_root/stop.sh" >/dev/null 2>&1; then
+  if grep -R -n -E 'docker run' "$repo_root/launch-headless.sh" "$repo_root/launch-gui.sh" "$repo_root/stop.sh" >/dev/null 2>&1; then
     fail 'Launch wrappers still contain docker run'
   fi
 
-  if rg -n 'mkdir -p|rm -rf|chown|chmod|tee|apt-get|systemctl' "$repo_root/scripts/validate" >/dev/null 2>&1; then
+  if grep -R -n -E 'mkdir -p|rm -rf|chown|chmod|tee|apt-get|systemctl' "$repo_root/scripts/validate" >/dev/null 2>&1; then
     fail 'Validation scripts contain mutating commands'
   fi
 }
@@ -139,6 +154,7 @@ main() {
       run_config_check
       run_compose_check
       run_image_status
+      run_fixture_tests
       run_shellcheck
       ;;
     bash-syntax) run_bash_syntax ;;
@@ -146,6 +162,7 @@ main() {
     config-check) run_config_check ;;
     compose-check) run_compose_check ;;
     image-status) run_image_status ;;
+    fixture-tests) run_fixture_tests ;;
     shellcheck) run_shellcheck ;;
     *)
       fail "Unknown mode: $mode"

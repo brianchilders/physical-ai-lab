@@ -47,7 +47,7 @@ main() {
     die "Docker image not found locally: $image_ref. Download it later with the official NVIDIA workflow."
   fi
 
-  write_compose_env_file "$compose_env"
+  write_gui_compose_env_file "$compose_env"
 
   exec docker compose \
     --env-file "$compose_env" \

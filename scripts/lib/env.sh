@@ -97,11 +97,19 @@ isaac_image_ref() {
 write_compose_env_file() {
   local out="$1"
   local var
+  local include_gui="${2:-no}"
 
   : >"$out"
   for var in "${LAB_ENV_VARS[@]}"; do
+    if [[ "$include_gui" != "yes" && ( "$var" == "DISPLAY" || "$var" == "XAUTHORITY" ) ]]; then
+      continue
+    fi
     if [[ -v $var ]]; then
       printf '%s=%s\n' "$var" "${!var}" >>"$out"
     fi
   done
+}
+
+write_gui_compose_env_file() {
+  write_compose_env_file "$1" yes
 }
