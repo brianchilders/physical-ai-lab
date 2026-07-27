@@ -2,7 +2,7 @@
 
 ## Phase 1
 
-Status: in progress
+Status: complete
 
 Goal:
 
@@ -22,13 +22,14 @@ Deliverables:
 
 Goal:
 
-- install Isaac Sim in a clean, reproducible Docker-based workflow
+- prepare Isaac Sim deployment infrastructure in a clean, reproducible Docker-based workflow
 
 Deliverables:
 
-- simulator container definition
+- simulator container boundary
 - launch instructions
 - validation checklist
+- storage preparation
 - runtime notes
 
 ## Phase 3

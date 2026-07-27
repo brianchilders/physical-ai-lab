@@ -1,28 +1,48 @@
 # Isaac Sim Docker
 
-This directory is reserved for the Isaac Sim container boundary.
-
-Phase 1 does not install Isaac Sim. The goal here is to define the contract that will make installation reproducible later.
+This directory documents the Isaac Sim container boundary used by Phase 2.
 
 Design intent:
 
-- use Docker as the main runtime boundary
+- use Docker as the runtime boundary
 - keep host dependencies minimal
 - isolate Isaac Sim-specific packages, caches, and runtime state
-- mount large data from `/mnt/nvme` instead of baking it into images
+- mount large data from `/mnt/nvme/isaac/` instead of baking it into images
+- keep the launch contract reproducible and documented
+- keep the canonical Compose file at [docker/isaac/compose.yaml](compose.yaml)
+- keep the pinned image reference data-driven through registry, repository, and tag variables
 
-Expected future responsibilities:
+Selected image:
 
-- base image and runtime image definitions
-- launch wrappers
-- GPU and Vulkan validation notes
-- volume mount documentation
-- simulator-specific environment files
+- `nvcr.io/nvidia/isaac-sim:6.0.1`
 
-Planned mount points:
+Why this image:
 
-- `/mnt/nvme/isaac/`
-- `/mnt/nvme/cache/`
-- `/mnt/nvme/assets/`
-- `/mnt/nvme/datasets/`
-- `/mnt/nvme/logs/`
+- it matches the current official NVIDIA Isaac Sim container documentation
+- it is the current documented NGC registry target
+- it keeps the repo aligned with supported launch guidance
+
+This directory does not install Isaac Sim and does not automate downloads.
+
+Expected responsibilities:
+
+- host/container mount documentation
+- launch wrapper notes
+- validation notes
+- version and environment variable conventions
+- future extension for web viewer or additional runtime variants
+
+Launch strategy:
+
+- headless is the primary supported path for SSH-driven use
+- GUI is optional and intended only for a real local desktop session
+- livestreaming uses Isaac Sim network ports, but this repository does not open firewall rules or manage network policy
+- no Docker socket mount and no privileged container mode are used
+
+Planned mount points beneath the canonical storage root:
+
+- `/mnt/nvme/isaac/cache/`
+- `/mnt/nvme/isaac/assets/`
+- `/mnt/nvme/isaac/datasets/`
+- `/mnt/nvme/isaac/logs/`
+- `/mnt/nvme/isaac/projects/`

@@ -1,27 +1,35 @@
 # Storage Plan
 
-This lab uses `/mnt/nvme` as the canonical storage root for large, local, reproducible work.
+This lab uses `/mnt/nvme/isaac` as the canonical storage root for large, local, reproducible Isaac Sim work.
 
 ## Target Layout
 
 ```text
-/mnt/nvme/
-├── isaac/
+/mnt/nvme/isaac/
 ├── cache/
+│   ├── isaac-sim/
+│   │   ├── computecache/
+│   │   └── main/
+│   └── ov/
+│       └── hub/
 ├── assets/
 ├── datasets/
 ├── logs/
+│   └── isaac-sim/
 └── projects/
+    └── isaac-sim/
+        ├── config/
+        ├── data/
+        └── pkg/
 ```
 
 ## Directory Purpose
 
-- `/mnt/nvme/isaac/`: Isaac Sim installation payloads, runtime state, and simulator-specific files.
-- `/mnt/nvme/cache/`: package caches, Docker caches, downloaded models, and temporary build artifacts.
-- `/mnt/nvme/assets/`: reusable assets such as meshes, textures, calibrated sensor files, and USD resources.
-- `/mnt/nvme/datasets/`: raw and processed datasets from experiments and sensors.
-- `/mnt/nvme/logs/`: run output, telemetry, debugging traces, and experiment logs.
-- `/mnt/nvme/projects/`: active project checkouts, sandboxes, and experimental worktrees.
+- `/mnt/nvme/isaac/cache/`: package caches, Docker-adjacent caches, downloaded models, and temporary build artifacts.
+- `/mnt/nvme/isaac/assets/`: reusable assets such as meshes, textures, calibrated sensor files, and USD resources.
+- `/mnt/nvme/isaac/datasets/`: raw and processed datasets from experiments and sensors.
+- `/mnt/nvme/isaac/logs/`: run output, telemetry, debugging traces, and experiment logs.
+- `/mnt/nvme/isaac/projects/`: active project checkouts, sandboxes, and experimental worktrees.
 
 ## Repository vs NVMe
 

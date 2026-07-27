@@ -2,7 +2,7 @@
 
 This directory is for metadata, dataset manifests, and small tracked examples.
 
-The real dataset store belongs on `/mnt/nvme/datasets/`.
+The real dataset store belongs on `/mnt/nvme/isaac/datasets/`.
 
 Use this directory for:
 

@@ -12,13 +12,13 @@ Git repo
   -> notebook analysis
   -> small canonical assets and examples
 
-/mnt/nvme
-  -> simulator installs
-  -> caches
+/mnt/nvme/isaac
+  -> simulator caches
   -> large assets
   -> datasets
   -> logs
   -> active project worktrees
+  -> simulator runtime state
 ```
 
 ## Why Docker First
@@ -38,22 +38,31 @@ For Isaac Sim specifically, Docker keeps the simulator environment isolated from
 The canonical local storage layout is:
 
 ```text
-/mnt/nvme/
-├── isaac/
+/mnt/nvme/isaac/
 ├── cache/
+│   ├── isaac-sim/
+│   │   ├── computecache/
+│   │   └── main/
+│   └── ov/
+│       └── hub/
 ├── assets/
 ├── datasets/
 ├── logs/
+│   └── isaac-sim/
 └── projects/
+    └── isaac-sim/
+        ├── config/
+        ├── data/
+        └── pkg/
 ```
 
 Rules:
 
-- keep Isaac Sim payloads under `/mnt/nvme/isaac/`
+- keep Isaac Sim payloads, caches, and runtime state under `/mnt/nvme/isaac/`
 - keep caches off the system disk when possible
 - keep datasets and logs out of git
-- store reusable artifacts in `/mnt/nvme/assets/`
-- keep active working trees and lab sandboxes in `/mnt/nvme/projects/`
+- store reusable artifacts in `/mnt/nvme/isaac/assets/`
+- keep active working trees and lab sandboxes in `/mnt/nvme/isaac/projects/`
 
 ## Future ROS 2 Integration
 
@@ -85,6 +94,6 @@ Integration principle:
 
 ## Phase Boundaries
 
-Phase 1 defines the rules.
+Phase 1 defined the rules.
 
-Phase 2 will add the first executable simulator container and validate the mount and runtime contract.
+Phase 2 adds the executable deployment contract, validation scripts, and storage preparation workflow without installing Isaac Sim yet.

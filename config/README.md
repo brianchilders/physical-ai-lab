@@ -7,6 +7,7 @@ This directory will hold tracked configuration that is safe to version:
 - simulator launch parameters
 - experiment manifests
 - paths and mount conventions
+- stable lab defaults in `lab.env.example`
 
 Guidelines:
 
@@ -18,6 +19,7 @@ Planned substructure:
 
 ```text
 config/
+├── lab.env.example
 ├── environment/
 ├── isaac/
 ├── sensors/
