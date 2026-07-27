@@ -1,0 +1,26 @@
+Wrapper stage layer stack:
+
+1. `composition_wrapper.usda` root layer
+2. `composition_root.usda` referenced default prim
+3. `lighting_layer.usda` sublayer, strongest among sublayers
+4. `base_environment.usda` sublayer, weaker than lighting
+5. `lab_environment.usda` referenced by `base_environment.usda`
+6. reusable asset layers referenced by `lab_environment.usda`
+
+Required sublayer order in `composition_root.usda`:
+
+1. `lighting_layer.usda`
+2. `base_environment.usda`
+
+Required composed strength check:
+
+- `lighting_layer.usda` wins over `base_environment.usda` for the authored
+  light intensity opinion
+
+Phase 5 result:
+
+- asset creation complete
+- composition creation complete
+- independent inspection complete
+- wrapper-stage composition is ready for future real-world environment
+  captures, including OVER USDZ input

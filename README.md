@@ -89,8 +89,8 @@ Supporting documentation:
 2. Phase 2: Isaac Sim deployment infrastructure, validation, and reproducible launch contract.
 3. Phase 3: controlled first-launch validation, smoke-test harnesses, and experiment records.
 4. Phase 4: OpenUSD foundations, stage authoring, and reusable scene inspection. Complete.
-5. Phase 5: ROS 2 integration and sensor/device bring-up.
-6. Phase 6: distributed inference and lab-scale automation, including DGX Spark integration.
+5. Phase 5: USD composition foundations, layer stacks, references, payloads, and wrapper stages. Complete.
+6. Phase 6: Physics foundations, simulation configuration, and the next environment/robot integration layer.
 
 ## Storage Convention
 
@@ -139,7 +139,9 @@ Phase 3 first-launch artifacts live under `experiments/001-first-launch/` and re
 
 Phase 4 OpenUSD foundations artifacts live under `experiments/002-openusd-foundations/` and record the first reproducible stage-authoring and inspection lab.
 
-The next milestone is Phase 4C / Phase 5: USD layers, references, and composition, which will prepare the lab for future real-world environment ingestion such as OVER USDZ captures.
+The next milestone is Phase 6: Physics foundations.
+
+Phase 5 established the USD composition model that will support future wrapper stages around real-world environments, OVER USDZ captures, robot assets, sensor rigs, and simulation configuration without redesigning the composition workflow.
 
 ## Working Rules
 
