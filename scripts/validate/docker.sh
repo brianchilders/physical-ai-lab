@@ -79,11 +79,23 @@ docker_runtime_candidates() {
   done | sort -n -k1,1 -k2,2 | cut -f2-
 }
 
+docker_run_gpu_passthrough() {
+  local image_ref="$1"
+  local use_entrypoint="${2:-no}"
+
+  if [[ "$use_entrypoint" == "yes" ]]; then
+    docker run --rm --pull=never --gpus all --entrypoint nvidia-smi "$image_ref" >/dev/null 2>&1
+  else
+    docker run --rm --pull=never --gpus all "$image_ref" nvidia-smi >/dev/null 2>&1
+  fi
+}
+
 validate_runtime() {
   validation_section "Container GPU"
   local status="NOT TESTED"
   local pinned_image runtime_image last_error=""
   local -a candidates=()
+  local has_local_cuda_candidates="no"
 
   if ! command -v docker >/dev/null 2>&1; then
     validation_warn "Docker is unavailable; GPU passthrough smoke test not tested"
@@ -99,14 +111,19 @@ validate_runtime() {
 
   pinned_image="$(isaac_image_ref)"
 
-  if docker image inspect "$pinned_image" >/dev/null 2>&1; then
+  while IFS= read -r runtime_image; do
+    [[ -n "$runtime_image" ]] || continue
+    candidates+=("$runtime_image")
+  done < <(docker_runtime_candidates)
+
+  if ((${#candidates[@]} > 0)); then
+    has_local_cuda_candidates="yes"
+  fi
+
+  if [[ "$has_local_cuda_candidates" != "yes" && -z "${candidates[*]:-}" ]] && \
+    docker image inspect "$pinned_image" >/dev/null 2>&1; then
     candidates=("$pinned_image")
     validation_pass "Pinned Isaac Sim image is present locally: $pinned_image"
-  else
-    while IFS= read -r runtime_image; do
-      [[ -n "$runtime_image" ]] || continue
-      candidates+=("$runtime_image")
-    done < <(docker_runtime_candidates)
   fi
 
   if ((${#candidates[@]} == 0)); then
@@ -116,7 +133,13 @@ validate_runtime() {
   fi
 
   for runtime_image in "${candidates[@]}"; do
-    if docker run --rm --pull=never --gpus all "$runtime_image" nvidia-smi >/dev/null 2>&1; then
+    if [[ "$runtime_image" == "$pinned_image" ]]; then
+      if docker_run_gpu_passthrough "$runtime_image" yes; then
+        validation_pass "Docker GPU passthrough works with $runtime_image"
+        validation_set_readiness "Container GPU" "PASS" "GPU passthrough succeeded"
+        return
+      fi
+    elif docker_run_gpu_passthrough "$runtime_image"; then
       validation_pass "Docker GPU passthrough works with $runtime_image"
       validation_set_readiness "Container GPU" "PASS" "GPU passthrough succeeded"
       return

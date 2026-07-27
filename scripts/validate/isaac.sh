@@ -3,10 +3,11 @@ validate_isaac() {
   local status="PASS"
   local start_failures="$VALIDATION_FAILURES"
 
-  local image_ref compose_file
+  local image_ref compose_file smoke_log
 
   image_ref="$(isaac_image_ref)"
   compose_file="$(compose_file_path)"
+  smoke_log="$(repo_root)/experiments/001-first-launch/results/smoke_test_fast_shutdown.log"
 
   validation_pass "Pinned Isaac Sim image reference: $image_ref"
 
@@ -38,5 +39,11 @@ validate_isaac() {
     validation_set_readiness "Isaac image" "PASS" "image presence checked"
   fi
 
-  validation_set_readiness "Isaac runtime" "NOT TESTED"
+  if [[ -f "$smoke_log" ]] && \
+    grep -n -E 'SMOKE: simulation loop complete|SMOKE: requesting immediate shutdown' "$smoke_log" >/dev/null 2>&1; then
+    validation_pass "Recorded successful Isaac Sim headless launch and smoke test"
+    validation_set_readiness "Isaac runtime" "HISTORICAL" "documented successful launch and smoke test"
+  else
+    validation_set_readiness "Isaac runtime" "NOT TESTED"
+  fi
 }

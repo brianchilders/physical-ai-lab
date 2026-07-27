@@ -15,6 +15,16 @@ require_dir() {
   [[ -d "$1" ]] || die "Missing required directory: $1. Run ./prepare-storage.sh first."
 }
 
+require_writable_dir() {
+  local dir="$1" probe
+  [[ -d "$dir" ]] || die "Missing required directory: $dir. Run ./prepare-storage.sh first."
+  probe="$dir/.write-check.$$"
+  if ! : >"$probe" 2>/dev/null; then
+    die "Directory is not writable: $dir"
+  fi
+  rm -f "$probe"
+}
+
 main() {
   local repo_root_path compose_env image_ref
 
@@ -34,13 +44,13 @@ main() {
   compose_env="$(mktemp)"
   trap 'rm -f "${compose_env:-}"' EXIT
 
-  require_dir "$ISAAC_STORAGE_ROOT/cache/isaac-sim/main"
-  require_dir "$ISAAC_STORAGE_ROOT/cache/isaac-sim/computecache"
-  require_dir "$ISAAC_STORAGE_ROOT/cache/ov/hub"
-  require_dir "$ISAAC_STORAGE_ROOT/logs/isaac-sim"
-  require_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/config"
-  require_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/data"
-  require_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/pkg"
+  require_writable_dir "$ISAAC_STORAGE_ROOT/cache/isaac-sim/main"
+  require_writable_dir "$ISAAC_STORAGE_ROOT/cache/isaac-sim/computecache"
+  require_writable_dir "$ISAAC_STORAGE_ROOT/cache/ov/hub"
+  require_writable_dir "$ISAAC_STORAGE_ROOT/logs/isaac-sim"
+  require_writable_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/config"
+  require_writable_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/data"
+  require_writable_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/pkg"
 
   image_ref="$(isaac_image_ref)"
   if ! docker image inspect "$image_ref" >/dev/null 2>&1; then
@@ -52,6 +62,7 @@ main() {
   exec docker compose \
     --env-file "$compose_env" \
     --file "$repo_root_path/docker/isaac/compose.yaml" \
+    --file "$repo_root_path/docker/isaac/compose.gui.yaml" \
     --profile gui \
     up \
     -d \

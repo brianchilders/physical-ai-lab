@@ -87,7 +87,7 @@ Supporting documentation:
 
 1. Phase 1: platform foundation, documentation, and repository organization.
 2. Phase 2: Isaac Sim deployment infrastructure, validation, and reproducible launch contract.
-3. Phase 3: controlled experiment harnesses, USD scene structure, and asset pipeline.
+3. Phase 3: controlled first-launch validation, smoke-test harnesses, and experiment records.
 4. Phase 4: ROS 2 integration and sensor/device bring-up.
 5. Phase 5: distributed inference and lab-scale automation, including DGX Spark integration.
 
@@ -133,6 +133,8 @@ Phase 2 entry points:
 - `./launch-headless.sh`
 - `./launch-gui.sh`
 - `./stop.sh`
+
+Phase 3 first-launch artifacts live under `experiments/001-first-launch/` and record the initial successful headless launch, smoke test, and teardown behavior.
 
 ## Working Rules
 

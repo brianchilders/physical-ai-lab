@@ -4,6 +4,9 @@ set -euo pipefail
 readonly STORAGE_ROOT="${ISAAC_STORAGE_ROOT:-/mnt/nvme/isaac}"
 readonly NVME_ROOT="/mnt/nvme"
 
+# shellcheck disable=SC1091
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/scripts/lib/isaac-runtime.sh"
+
 log() {
   printf '%s\n' "$*"
 }
@@ -30,20 +33,10 @@ main() {
   local -a dirs=(
     "$STORAGE_ROOT"
     "$STORAGE_ROOT/cache"
-    "$STORAGE_ROOT/cache/isaac-sim"
-    "$STORAGE_ROOT/cache/isaac-sim/main"
-    "$STORAGE_ROOT/cache/isaac-sim/computecache"
     "$STORAGE_ROOT/cache/ov"
-    "$STORAGE_ROOT/cache/ov/hub"
-    "$STORAGE_ROOT/assets"
-    "$STORAGE_ROOT/datasets"
     "$STORAGE_ROOT/logs"
-    "$STORAGE_ROOT/logs/isaac-sim"
     "$STORAGE_ROOT/projects"
     "$STORAGE_ROOT/projects/isaac-sim"
-    "$STORAGE_ROOT/projects/isaac-sim/config"
-    "$STORAGE_ROOT/projects/isaac-sim/data"
-    "$STORAGE_ROOT/projects/isaac-sim/pkg"
   )
 
   for dir in "${dirs[@]}"; do
@@ -51,8 +44,19 @@ main() {
     log "Ensured: $dir"
   done
 
+  while IFS= read -r dir; do
+    [[ -n "$dir" ]] || continue
+    mkdir -p "$dir"
+    log "Ensured Isaac runtime dir: $dir"
+  done < <(isaac_runtime_ownership_dirs)
+
+  while IFS= read -r dir; do
+    [[ -n "$dir" ]] || continue
+    mkdir -p "$dir"
+    log "Ensured Isaac data dir: $dir"
+  done < <(isaac_runtime_data_dirs)
+
   log "Storage preparation complete."
 }
 
 main "$@"
-

@@ -11,12 +11,8 @@ die() {
   exit 1
 }
 
-require_dir() {
-  [[ -d "$1" ]] || die "Missing required directory: $1. Run ./prepare-storage.sh first."
-}
-
 main() {
-  local repo_root_path compose_env image_ref
+  local repo_root_path compose_env
 
   load_lab_env
   require_docker
@@ -25,18 +21,7 @@ main() {
   compose_env="$(mktemp)"
   trap 'rm -f "${compose_env:-}"' EXIT
 
-  require_dir "$ISAAC_STORAGE_ROOT/cache/isaac-sim/main"
-  require_dir "$ISAAC_STORAGE_ROOT/cache/isaac-sim/computecache"
-  require_dir "$ISAAC_STORAGE_ROOT/cache/ov/hub"
-  require_dir "$ISAAC_STORAGE_ROOT/logs/isaac-sim"
-  require_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/config"
-  require_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/data"
-  require_dir "$ISAAC_STORAGE_ROOT/projects/isaac-sim/pkg"
-
-  image_ref="$(isaac_image_ref)"
-  if ! docker image inspect "$image_ref" >/dev/null 2>&1; then
-    die "Docker image not found locally: $image_ref. Download it later with the official NVIDIA workflow."
-  fi
+  ./scripts/validate-runtime-ownership.sh
 
   write_compose_env_file "$compose_env"
 

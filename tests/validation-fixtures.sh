@@ -45,7 +45,7 @@ make_no_rg_path() {
   dir="$(mktemp -d)"
   mkdir -p "$dir/bin"
 
-  for tool in bash git find grep sed awk sort cut head mktemp rm dirname pwd cat chmod env tr; do
+  for tool in bash git find grep sed awk sort cut head mktemp rm dirname pwd cat chmod env tr id; do
     real_tool="$(command -v "$tool")"
     ln -s "$real_tool" "$dir/bin/$tool"
   done
@@ -121,7 +121,12 @@ case "$subcommand" in
         --gpus)
           skip_next=1
           ;;
+        --entrypoint)
+          skip_next=1
+          ;;
         --gpus=*)
+          ;;
+        --entrypoint=*)
           ;;
         -*)
           ;;
@@ -131,7 +136,7 @@ case "$subcommand" in
           ;;
       esac
     done
-    printf '%s\n' "$local_image" >>"${DOCKER_RUN_LOG_FILE:-/dev/null}"
+    printf 'docker run %s\n' "$*" >>"${DOCKER_RUN_LOG_FILE:-/dev/null}"
     if [[ "${DOCKER_RUN_SUCCESS_IMAGES:-}" == *"|${local_image}|"* ]]; then
       exit 0
     fi
@@ -271,7 +276,8 @@ run_docker_case() {
   if [[ -n "$expected_first_run" ]]; then
     local first_run
     first_run="$(sed -n '1p' "$run_log")"
-    [[ "$first_run" == "$expected_first_run" ]] || fail "Expected first runtime image '$expected_first_run', got '$first_run'"
+    [[ "$first_run" == *"$expected_first_run"* ]] || fail "Expected first runtime command to include '$expected_first_run', got '$first_run'"
+    [[ "$first_run" == *"--pull=never"* ]] || fail "Expected runtime command to use --pull=never, got '$first_run'"
   fi
 
   PATH="$old_path"
@@ -336,12 +342,45 @@ run_docker_tests() {
     "FAIL - GPU passthrough failed"
 
   run_docker_case \
-    "Docker discovery prefers pinned Isaac image when present" \
-    $'nvidia/cuda:12.9.1-base-ubuntu24.04\nnvcr.io/nvidia/cuda:12.9.1-runtime-ubuntu24.04' \
+    "Docker discovery prefers local CUDA image over pinned Isaac image" \
+    $'nvidia/cuda:12.9.1-base-ubuntu24.04\nnvcr.io/nvidia/cuda:12.9.1-runtime-ubuntu24.04\nnvcr.io/nvidia/isaac-sim:6.0.1' \
+    '|nvidia/cuda:12.9.1-base-ubuntu24.04|nvcr.io/nvidia/isaac-sim:6.0.1|' \
+    '|nvidia/cuda:12.9.1-base-ubuntu24.04|' \
+    "PASS - GPU passthrough succeeded" \
+    "nvidia/cuda:12.9.1-base-ubuntu24.04"
+
+  run_docker_case \
+    "Docker discovery falls back to explicit Isaac entrypoint when no CUDA image is local" \
+    $'nvcr.io/nvidia/isaac-sim:6.0.1' \
     '|nvcr.io/nvidia/isaac-sim:6.0.1|' \
     '|nvcr.io/nvidia/isaac-sim:6.0.1|' \
     "PASS - GPU passthrough succeeded" \
-    "nvcr.io/nvidia/isaac-sim:6.0.1"
+    "--entrypoint nvidia-smi nvcr.io/nvidia/isaac-sim:6.0.1"
+
+  local stub_dir run_log
+  local old_path="$PATH"
+  stub_dir="$(make_stub_dir)"
+  run_log="$stub_dir/run.log"
+  create_docker_stub "$stub_dir"
+  load_lab_env
+  reset_validation_state
+  export DOCKER_IMAGE_LS_OUTPUT=$'nvidia/cuda:12.9.1-base-ubuntu24.04\nnvidia/cuda:12.9.1-runtime-ubuntu24.04'
+  export DOCKER_IMAGE_INSPECT_SUCCESS='|nvcr.io/nvidia/isaac-sim:6.0.1|'
+  export DOCKER_RUN_SUCCESS_IMAGES='|nvidia/cuda:12.9.1-runtime-ubuntu24.04|'
+  export DOCKER_RUN_LOG_FILE="$run_log"
+  PATH="$stub_dir/bin"
+  validate_runtime >/dev/null 2>&1
+  assert_readiness "Container GPU" "PASS - GPU passthrough succeeded"
+  [[ "$(sed -n '1p' "$run_log")" == *"nvidia/cuda:12.9.1-base-ubuntu24.04"* ]] || \
+    fail "Expected the best local CUDA candidate to be tried first"
+  [[ "$(sed -n '2p' "$run_log")" == *"nvidia/cuda:12.9.1-runtime-ubuntu24.04"* ]] || \
+    fail "Expected a later successful CUDA candidate after a failing one"
+  [[ "$(sed -n '1p' "$run_log")" != *"nvcr.io/nvidia/isaac-sim:6.0.1"* ]] || \
+    fail "Generic GPU validation should not invoke the Isaac image when CUDA candidates exist"
+  PATH="$old_path"
+  /bin/rm -rf "$stub_dir"
+  unset DOCKER_IMAGE_LS_OUTPUT DOCKER_IMAGE_INSPECT_SUCCESS DOCKER_RUN_SUCCESS_IMAGES DOCKER_RUN_LOG_FILE
+  printf 'PASS: Docker discovery keeps successful CUDA candidates ahead of Isaac fallback\n'
 }
 
 main() {

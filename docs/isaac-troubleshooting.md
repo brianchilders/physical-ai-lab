@@ -26,6 +26,19 @@ Fix:
 - run `./prepare-storage.sh`
 - do not create alternate storage paths
 
+## Bind Mount Not Writable
+
+Symptoms:
+
+- launch wrapper fails before the container starts
+- a required storage directory exists but cannot be written to by the host user
+
+Fix:
+
+- verify the storage tree ownership and permissions on `/mnt/nvme/isaac`
+- keep the container UID and GID aligned with the supported Isaac Sim `1234:1234` identity
+- realign the dedicated runtime directories with `sudo make prepare-runtime-ownership CONFIRM_CHOWN=1` before retrying the launch
+
 ## Docker Daemon Down
 
 Symptoms:
@@ -58,8 +71,35 @@ Symptoms:
 
 Fix:
 
-- download the approved image later using the official NVIDIA workflow
+- use the guarded `make pull-image CONFIRM_PULL=1` target for the pinned image
+- if an anonymous pull fails with an authentication, authorization, locked-content, or license-acceptance error, accept the relevant NGC terms in the browser and then authenticate with the manual NGC workflow
 - do not change the repo scripts to pull automatically
+
+## First Launch Completed, Teardown Needs Work
+
+Symptoms:
+
+- the first smoke-test run reaches frame execution and then fails during shutdown
+- a post-close segmentation fault appears after `SimulationApp.close()`
+
+Fix:
+
+- use the recorded immediate-shutdown smoke-test path in `experiments/001-first-launch/smoke_test.py`
+- keep the successful fast-shutdown workaround documented in the experiment summary
+- do not reintroduce the original graceful-close path unless the simulator teardown contract changes
+
+## Compatibility Checker Fails
+
+Symptoms:
+
+- the built-in Isaac Sim compatibility checker reports a failure
+- the first launch aborts before the simulator starts
+
+Fix:
+
+- treat the TITAN RTX as experimental because it is below NVIDIA's current RTX 4080 minimum reference
+- resolve host driver, Vulkan, or container issues before attempting the first launch again
+- rerun the compatibility checker before any simulator launch
 
 ## GUI Launch Fails
 
@@ -129,3 +169,4 @@ Fix:
 
 - accept the NVIDIA terms in the browser for the relevant NGC account
 - keep the repo free of login automation
+- use `$oauthtoken` with an NGC API key for the manual `docker login nvcr.io` step only if the guarded anonymous pull is denied

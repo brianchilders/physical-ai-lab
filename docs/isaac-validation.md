@@ -1,6 +1,6 @@
 # Isaac Sim Validation
 
-This phase adds validation tooling only. Nothing here modifies the workstation.
+This phase adds validation tooling for the Isaac Sim deployment and first-launch contract. Nothing here modifies the workstation.
 
 ## What Is Checked
 
@@ -29,6 +29,8 @@ Additional helper checks are available as lightweight tests:
 - `make config-check`
 - `make compose-check`
 - `make image-status`
+- `make pull-image CONFIRM_PULL=1`
+- `make validate-runtime-ownership`
 
 ## Commands
 
@@ -63,8 +65,29 @@ If no local image exists, the script warns instead of forcing a download.
 
 The validation path does not install software, start a simulator container, or modify network settings.
 
+Before any launch, the launch wrapper checks that each required bind-mounted directory is writable by creating and removing a temporary file.
+
+If the runtime directories need to be realigned, use the guarded ownership target:
+
+```bash
+sudo make prepare-runtime-ownership CONFIRM_CHOWN=1
+```
+
+The read-only ownership validation target checks that the supported `1234:1234` identity can write the approved Isaac runtime paths and reports the current ownership of `assets` and `datasets` without changing them.
+
+For the headless launch, host port availability should be checked before start-up for:
+
+- `49100/tcp`
+- `47998/udp`
+
+Once the pinned image is present locally, the container's built-in compatibility checker must run before the first Isaac Sim launch.
+
+After a successful pull, record the local image digest with `docker image inspect` before the launch step.
+
 The container-level GPU smoke test is reported as `Container GPU readiness` because it verifies Docker GPU passthrough only.
-`Isaac runtime readiness` is reserved for the phase where the simulator itself actually starts.
+It prefers locally installed CUDA images and may fall back to the pinned Isaac Sim image only with an explicit `nvidia-smi` entrypoint when no CUDA image is present.
+
+`Isaac runtime readiness` is reported separately and is marked `HISTORICAL` when the repository already contains a recorded successful headless launch and smoke test. It is not the same thing as the generic GPU passthrough check.
 
 ## Headless Vulkan
 
@@ -84,5 +107,7 @@ Before a launch, you want to see:
 - `PASS` on Docker daemon and NVIDIA runtime
 - `PASS` on Vulkan
 - `PASS` on `/mnt/nvme/isaac/`
+- a recorded local image digest from `docker image inspect`
+- a compatibility-check pass from the container image before the first launch
 
-Any `FAIL` should be resolved before attempting an Isaac Sim launch.
+Any `FAIL` should be resolved before attempting an Isaac Sim launch. When the Phase 3 records already show a successful headless launch and smoke test, focus on preserving that state rather than relaunching to “prove” history again.
