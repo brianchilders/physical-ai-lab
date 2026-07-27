@@ -1,0 +1,13 @@
+/World (Xform)
+  /World/Ground (Mesh)
+  /World/Light (DistantLight)
+  /World/Lab (Xform)
+    /World/Lab/RedCube (Cube)
+    /World/Lab/BlueSphere (Sphere)
+    /World/Lab/YellowMarker (Cylinder)
+  /World/PayloadArea (Xform)
+    /World/PayloadArea/ClusterCube (Cube)
+    /World/PayloadArea/ClusterSphere (Sphere)
+
+This hierarchy reflects the validated wrapper composition and is ready for
+future wrapper stages around real-world captures.

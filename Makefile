@@ -1,7 +1,7 @@
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 ISAAC_IMAGE_REF := $(shell bash -lc 'set -euo pipefail; cd "$(REPO_ROOT)"; source scripts/lib/env.sh; load_lab_env; isaac_image_ref')
 
-.PHONY: help prepare-storage storage validate config-check compose-check image-status pull-image prepare-runtime-ownership validate-runtime-ownership prepare-smoke-runtime-ownership validate-smoke-runtime-ownership prepare-openusd-lab prepare-openusd-lab-ownership validate-openusd-lab-ownership validate-openusd-lab run-openusd-lab inspect-openusd-lab run-headless run-gui logs stop launch-headless launch-gui validate-host
+.PHONY: help prepare-storage storage validate config-check compose-check image-status pull-image prepare-runtime-ownership validate-runtime-ownership prepare-smoke-runtime-ownership validate-smoke-runtime-ownership prepare-openusd-lab prepare-openusd-lab-ownership validate-openusd-lab-ownership validate-openusd-lab run-openusd-lab inspect-openusd-lab prepare-usd-composition prepare-usd-composition-ownership validate-usd-composition-ownership run-usd-composition-assets run-usd-composition inspect-usd-composition test-phase5 run-headless run-gui logs stop launch-headless launch-gui validate-host
 
 help:
 	@printf '%s\n' "Targets:"
@@ -21,6 +21,13 @@ help:
 	@printf '%s\n' "  make validate-openusd-lab - run Phase 4 static validation checks"
 	@printf '%s\n' "  make run-openusd-lab - launch the OpenUSD foundations lab in Isaac Sim"
 	@printf '%s\n' "  make inspect-openusd-lab - inspect the saved OpenUSD stage in Isaac Sim"
+	@printf '%s\n' "  make prepare-usd-composition - create Phase 5 directories"
+	@printf '%s\n' "  make prepare-usd-composition-ownership - chown Phase 5 paths when CONFIRM_CHOWN=1"
+	@printf '%s\n' "  make validate-usd-composition-ownership - verify Phase 5 ownership"
+	@printf '%s\n' "  make run-usd-composition-assets - build reusable Phase 5 assets"
+	@printf '%s\n' "  make run-usd-composition - build the Phase 5 composed stages"
+	@printf '%s\n' "  make inspect-usd-composition - independently inspect the Phase 5 composed stages"
+	@printf '%s\n' "  make test-phase5 - run Phase 5 refinement checks"
 	@printf '%s\n' "  make run-headless     - launch Isaac Sim headless via Compose"
 	@printf '%s\n' "  make run-gui          - launch Isaac Sim GUI via Compose"
 	@printf '%s\n' "  make logs             - follow Isaac Sim container logs"
@@ -87,6 +94,27 @@ run-openusd-lab:
 
 inspect-openusd-lab:
 	./scripts/inspect-openusd-foundations.sh
+
+prepare-usd-composition:
+	./scripts/prepare-usd-composition.sh
+
+prepare-usd-composition-ownership:
+	./scripts/prepare-usd-composition-ownership.sh
+
+validate-usd-composition-ownership:
+	./scripts/validate-usd-composition-ownership.sh
+
+run-usd-composition-assets:
+	./scripts/run-usd-composition.sh assets
+
+run-usd-composition:
+	./scripts/run-usd-composition.sh composition
+
+inspect-usd-composition:
+	./scripts/inspect-usd-composition.sh
+
+test-phase5:
+	./tests/phase5-refinement.sh all
 
 run-headless:
 	./launch-headless.sh

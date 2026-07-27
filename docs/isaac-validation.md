@@ -31,6 +31,7 @@ Additional helper checks are available as lightweight tests:
 - `make image-status`
 - `make pull-image CONFIRM_PULL=1`
 - `make validate-runtime-ownership`
+- `make validate-usd-composition-ownership`
 
 ## Commands
 
@@ -74,6 +75,19 @@ sudo make prepare-runtime-ownership CONFIRM_CHOWN=1
 ```
 
 The read-only ownership validation target checks that the supported `1234:1234` identity can write the approved Isaac runtime paths and reports the current ownership of `assets` and `datasets` without changing them.
+
+Phase 5 adds a separate USD composition ownership and validation path under
+`/mnt/nvme/isaac/experiments/003-usd-composition/`. The static validation target
+does not launch Isaac Sim, but it still uses a short-lived container to verify
+the mounted Phase 5 paths are owned by the supported `1234:1234` identity.
+
+The independent Phase 5 composition inspector is a disposable read-only
+validator. It performs immutable stage inspection inside the Isaac Sim Python
+environment, prints its validation markers, and terminates with `os._exit()`
+instead of calling `SimulationApp.close()`. That workaround is scoped only to
+the one-shot inspector container because Isaac Sim 6.0.1 exhibited teardown
+defects after successful validation. Normal authoring scripts and long-lived
+services should continue to use the validated shutdown path.
 
 For the headless launch, host port availability should be checked before start-up for:
 

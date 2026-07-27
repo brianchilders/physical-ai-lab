@@ -17,7 +17,8 @@ This file tracks the major implementation checkpoints for the lab.
 ## Current Focus
 
 Phase 4: OpenUSD foundations, stage authoring, and reusable scene inspection. Complete.
+Phase 5: USD composition foundations, references, payloads, sublayers, and wrapper stages. Complete.
 
 ## Next Checkpoint
 
-Phase 4C / Phase 5: USD layers, references, and composition, then ROS 2 workspace strategy and sensor/device bring-up.
+Phase 6: Physics foundations, then sensor/device bring-up and downstream integration planning.

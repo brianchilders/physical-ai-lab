@@ -28,16 +28,17 @@
 - Phase 4A OpenUSD stage authoring complete
 - Phase 4B OpenUSD scene inspection complete
 - Phase 4 overall complete
+- Phase 5 USD composition foundations complete
 
 ## Current Phase
 
-Phase 4 complete. Next up is Phase 4C / Phase 5: USD layers, references, and composition.
+Phase 4 complete. Phase 5 is complete and the lab is moving to Phase 6 physics foundations.
 
 ## Pending Work
 
 - ROS 2 integration deferred
 - DGX Spark integration deferred
-- USD layers, references, and composition planning
+- Phase 6 planning and physics foundations design pending
 
 ## Known Limitations
 
@@ -51,8 +52,8 @@ Phase 4 complete. Next up is Phase 4C / Phase 5: USD layers, references, and com
 - the approved runtime ownership prep target is guarded and limited to the dedicated Isaac directories only
 - the smoke-test teardown path now uses immediate shutdown to avoid the post-close segmentation fault seen in the first attempt
 - `make stop` requires the headless Compose profile to remove the project cleanly
-- Phase 4 is complete; future composition work will prepare for real-world environment ingestion such as OVER USDZ captures
+- Phase 5 composition work is complete and now provides the wrapper-stage foundation for future real-world environment ingestion such as OVER USDZ captures
 
 ## Next Milestone
 
-Finalize the Phase 2 deployment contract and begin Phase 3 experiment harness design.
+Begin Phase 6 physics foundations after the Phase 5 documentation finalization is reviewed.
