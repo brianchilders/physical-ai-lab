@@ -56,3 +56,5 @@ Use NVMe for:
 - keep data paths explicit in docs and config
 - never assume a hidden default location for simulator state
 - document the mount points before adding automation that depends on them
+- experiment runtime trees may live under `/mnt/nvme/isaac/experiments/<phase>/` with separate `output/`, `results/`, cache, config, data, and log subdirectories
+- Phase 6 uses `/mnt/nvme/isaac/experiments/004-physics-foundations/` as the canonical runtime tree, while the only tracked runtime-adjacent result artifact is the sanitized `results/summary.md`

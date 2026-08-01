@@ -1,0 +1,15 @@
+# Expected Hierarchy
+
+```text
+/World (Xform)
+  /World/PhysicsScene (PhysicsScene)
+  /World/Looks (Scope)
+    /World/Looks/GroundMaterial (Material)
+    /World/Looks/CubeMaterial (Material)
+    /World/Looks/SphereMaterial (Material)
+  /World/Geometry (Xform)
+    /World/Geometry/Ground (Mesh)
+  /World/Actors (Xform)
+    /World/Actors/LowBounceCube (Cube)
+    /World/Actors/HighBounceSphere (Sphere)
+```
