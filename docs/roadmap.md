@@ -92,28 +92,41 @@ Validation results:
 
 ## Phase 6
 
+Status: complete
+
 Goal:
 
 - introduce physics foundations in a controlled, documented way
 
 Deliverables:
 
-- simulation configuration
-- physics setup and validation notes
-- articulated rigid-body and joint foundations
-- environment and asset preparation for downstream robot and sensor work
+- physics scene authoring and explicit gravity setup
+- static ground collider and dynamic rigid bodies
+- explicit physics materials, collision schemas, and mass properties
+- fixed-step contact reporting and rebound detection
+- two-run reproducibility comparison with bounded tolerances
+- environment preparation for downstream robot and sensor work
+
+Validation results:
+
+- scene authoring complete
+- controlled simulation complete
+- independent formal inspection complete
+- cross-run reproducibility comparison complete
+- teardown containment scoped to the disposable one-shot authoring and inspection containers only
 
 ## Phase 7
 
 Goal:
 
-- introduce robots and articulations in a controlled, documented way
+- introduce an interactive Isaac Sim development environment in a controlled, documented way
 
 Deliverables:
 
-- robot asset bring-up
-- articulation conventions
-- kinematic and dynamic control foundations
+- persistent interactive development container workflow
+- WebRTC-oriented simulator access notes
+- separation from one-shot production containers
+- iterative scene-debug-edit loop guidance
 
 ## Phase 8
 

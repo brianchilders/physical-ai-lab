@@ -90,7 +90,8 @@ Supporting documentation:
 3. Phase 3: controlled first-launch validation, smoke-test harnesses, and experiment records.
 4. Phase 4: OpenUSD foundations, stage authoring, and reusable scene inspection. Complete.
 5. Phase 5: USD composition foundations, layer stacks, references, payloads, and wrapper stages. Complete.
-6. Phase 6: Physics foundations, simulation configuration, and the next environment/robot integration layer.
+6. Phase 6: Physics foundations, deterministic simulation comparison, and the next environment/robot integration layer. Complete.
+7. Phase 7: Interactive Isaac Sim development environment.
 
 ## Storage Convention
 
@@ -139,7 +140,9 @@ Phase 3 first-launch artifacts live under `experiments/001-first-launch/` and re
 
 Phase 4 OpenUSD foundations artifacts live under `experiments/002-openusd-foundations/` and record the first reproducible stage-authoring and inspection lab.
 
-The next milestone is Phase 6: Physics foundations.
+Phase 5 USD composition artifacts live under `experiments/003-usd-composition/` and record the reference composition pattern for reusable layers, wrapper stages, and read-only inspection.
+
+The next milestone is Phase 7: Interactive Isaac Sim development environment.
 
 Phase 5 established the USD composition model that will support future wrapper stages around real-world environments, OVER USDZ captures, robot assets, sensor rigs, and simulation configuration without redesigning the composition workflow.
 

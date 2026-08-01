@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+*.usd
+*.usda
+*.csv
+*.json
+*.log
+*.out
+*.err
+output/*
+results/*
+!output/.gitkeep
+!results/.gitkeep
+!results/summary.md

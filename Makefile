@@ -1,7 +1,7 @@
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 ISAAC_IMAGE_REF := $(shell bash -lc 'set -euo pipefail; cd "$(REPO_ROOT)"; source scripts/lib/env.sh; load_lab_env; isaac_image_ref')
 
-.PHONY: help prepare-storage storage validate config-check compose-check image-status pull-image prepare-runtime-ownership validate-runtime-ownership prepare-smoke-runtime-ownership validate-smoke-runtime-ownership prepare-openusd-lab prepare-openusd-lab-ownership validate-openusd-lab-ownership validate-openusd-lab run-openusd-lab inspect-openusd-lab prepare-usd-composition prepare-usd-composition-ownership validate-usd-composition-ownership run-usd-composition-assets run-usd-composition inspect-usd-composition test-phase5 run-headless run-gui logs stop launch-headless launch-gui validate-host
+.PHONY: help prepare-storage storage validate config-check compose-check image-status pull-image prepare-runtime-ownership validate-runtime-ownership prepare-smoke-runtime-ownership validate-smoke-runtime-ownership prepare-openusd-lab prepare-openusd-lab-ownership validate-openusd-lab-ownership validate-openusd-lab run-openusd-lab inspect-openusd-lab prepare-usd-composition prepare-usd-composition-ownership validate-usd-composition-ownership run-usd-composition-assets run-usd-composition inspect-usd-composition test-phase5 prepare-physics-foundations prepare-physics-foundations-ownership validate-physics-foundations-ownership create-physics-scene run-physics-experiment inspect-physics-results compare-physics-runs test-phase6 run-headless run-gui logs stop launch-headless launch-gui validate-host
 
 help:
 	@printf '%s\n' "Targets:"
@@ -28,6 +28,14 @@ help:
 	@printf '%s\n' "  make run-usd-composition - build the Phase 5 composed stages"
 	@printf '%s\n' "  make inspect-usd-composition - independently inspect the Phase 5 composed stages"
 	@printf '%s\n' "  make test-phase5 - run Phase 5 refinement checks"
+	@printf '%s\n' "  make prepare-physics-foundations - create Phase 6 directories"
+	@printf '%s\n' "  make prepare-physics-foundations-ownership - chown Phase 6 paths when CONFIRM_CHOWN=1"
+	@printf '%s\n' "  make validate-physics-foundations-ownership - verify Phase 6 ownership"
+	@printf '%s\n' "  make create-physics-scene - author the Phase 6 physics scene"
+	@printf '%s\n' "  make run-physics-experiment - execute the Phase 6 physics experiment twice"
+	@printf '%s\n' "  make inspect-physics-results - inspect the Phase 6 outputs in read-only mode"
+	@printf '%s\n' "  make compare-physics-runs - compare the two Phase 6 runs"
+	@printf '%s\n' "  make test-phase6 - run Phase 6 static refinement checks"
 	@printf '%s\n' "  make run-headless     - launch Isaac Sim headless via Compose"
 	@printf '%s\n' "  make run-gui          - launch Isaac Sim GUI via Compose"
 	@printf '%s\n' "  make logs             - follow Isaac Sim container logs"
@@ -115,6 +123,30 @@ inspect-usd-composition:
 
 test-phase5:
 	./tests/phase5-refinement.sh all
+
+prepare-physics-foundations:
+	./scripts/prepare-physics-foundations.sh
+
+prepare-physics-foundations-ownership:
+	./scripts/prepare-physics-foundations-ownership.sh
+
+validate-physics-foundations-ownership:
+	./scripts/validate-physics-foundations-ownership.sh
+
+create-physics-scene:
+	./scripts/create-physics-scene.sh
+
+run-physics-experiment:
+	./scripts/run-physics-experiment.sh
+
+inspect-physics-results:
+	./scripts/inspect-physics-results.sh
+
+compare-physics-runs:
+	./scripts/compare-physics-runs.sh
+
+test-phase6:
+	./tests/phase6-refinement.sh all
 
 run-headless:
 	./launch-headless.sh
