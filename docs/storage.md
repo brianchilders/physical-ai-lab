@@ -16,6 +16,17 @@ This lab uses `/mnt/nvme/isaac` as the canonical storage root for large, local, 
 ├── datasets/
 ├── logs/
 │   └── isaac-sim/
+├── interactive-studio/
+│   ├── cache/
+│   │   ├── computecache/
+│   │   ├── hub/
+│   │   └── main/
+│   ├── config/
+│   ├── data/
+│   ├── logs/
+│   ├── pkg/
+│   ├── sessions/
+│   └── workspace/
 └── projects/
     └── isaac-sim/
         ├── config/
@@ -27,6 +38,8 @@ This lab uses `/mnt/nvme/isaac` as the canonical storage root for large, local, 
 
 - `/mnt/nvme/isaac/cache/`: package caches, Docker-adjacent caches, downloaded models, and temporary build artifacts.
 - `/mnt/nvme/isaac/assets/`: reusable assets such as meshes, textures, calibrated sensor files, and USD resources.
+- `/mnt/nvme/isaac/interactive-studio/`: persistent Interactive Studio runtime root with dedicated caches, config, logs, and workspace.
+- `/mnt/nvme/isaac/interactive-studio/workspace/`: writable Interactive Studio working area for projects, scenes, exports, captures, screenshots, and scratch space.
 - `/mnt/nvme/isaac/datasets/`: raw and processed datasets from experiments and sensors.
 - `/mnt/nvme/isaac/logs/`: run output, telemetry, debugging traces, and experiment logs.
 - `/mnt/nvme/isaac/projects/`: active project checkouts, sandboxes, and experimental worktrees.
@@ -58,3 +71,6 @@ Use NVMe for:
 - document the mount points before adding automation that depends on them
 - experiment runtime trees may live under `/mnt/nvme/isaac/experiments/<phase>/` with separate `output/`, `results/`, cache, config, data, and log subdirectories
 - Phase 6 uses `/mnt/nvme/isaac/experiments/004-physics-foundations/` as the canonical runtime tree, while the only tracked runtime-adjacent result artifact is the sanitized `results/summary.md`
+- Phase 7 uses `/mnt/nvme/isaac/interactive-studio/` as the dedicated interactive runtime tree and does not reuse Phase 6 output or result paths
+- Phase 7 workspace artifacts such as the saved smoke-test USD layers remain bind-mounted working content and stay outside git
+- Phase 7 package downloads such as `interactive-studio/pkg/hub-2.2.0` are persistent runtime artifacts, not tracked source
