@@ -74,7 +74,7 @@ If the runtime directories need to be realigned, use the guarded ownership targe
 sudo make prepare-runtime-ownership CONFIRM_CHOWN=1
 ```
 
-The read-only ownership validation target checks that the supported `1234:1234` identity can write the approved Isaac runtime paths and reports the current ownership of `assets` and `datasets` without changing them.
+The read-only ownership validation target checks that the supported `1234:1234` identity can write the approved Isaac runtime paths and reports the current ownership of `assets` and `datasets` without changing them. Numeric ownership must be validated from the normal host shell; if a namespace-obscured environment reports `65534:65534`, treat that as `NOT TESTED` for host ownership, not as a pass and not as a reason to mutate ownership. Container effective-access probes are separate from host numeric ownership checks.
 
 Phase 5 adds a separate USD composition ownership and validation path under
 `/mnt/nvme/isaac/experiments/003-usd-composition/`. The static validation target
@@ -88,6 +88,14 @@ instead of calling `SimulationApp.close()`. That workaround is scoped only to
 the one-shot inspector container because Isaac Sim 6.0.1 exhibited teardown
 defects after successful validation. Normal authoring scripts and long-lived
 services should continue to use the validated shutdown path.
+
+Phase 7 adds a separate Interactive Studio launch and ownership validation
+path. It remains launch-prerequisite validation only and does not start Isaac
+Sim during the prelaunch checks. The Interactive Studio ownership validator
+must be run from the normal host shell when host numeric ownership is being
+verified; if a namespace-obscured environment reports `65534:65534`, treat that
+result as `NOT TESTED` rather than a pass. Container effective-access probes
+are separate from host numeric ownership checks.
 
 For the headless launch, host port availability should be checked before start-up for:
 

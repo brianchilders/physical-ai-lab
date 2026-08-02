@@ -1,7 +1,7 @@
 REPO_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 ISAAC_IMAGE_REF := $(shell bash -lc 'set -euo pipefail; cd "$(REPO_ROOT)"; source scripts/lib/env.sh; load_lab_env; isaac_image_ref')
 
-.PHONY: help prepare-storage storage validate config-check compose-check image-status pull-image prepare-runtime-ownership validate-runtime-ownership prepare-smoke-runtime-ownership validate-smoke-runtime-ownership prepare-openusd-lab prepare-openusd-lab-ownership validate-openusd-lab-ownership validate-openusd-lab run-openusd-lab inspect-openusd-lab prepare-usd-composition prepare-usd-composition-ownership validate-usd-composition-ownership run-usd-composition-assets run-usd-composition inspect-usd-composition test-phase5 prepare-physics-foundations prepare-physics-foundations-ownership validate-physics-foundations-ownership create-physics-scene run-physics-experiment inspect-physics-results compare-physics-runs test-phase6 run-headless run-gui logs stop launch-headless launch-gui validate-host
+.PHONY: help prepare-storage storage validate config-check compose-check image-status pull-image prepare-runtime-ownership validate-runtime-ownership prepare-smoke-runtime-ownership validate-smoke-runtime-ownership prepare-openusd-lab prepare-openusd-lab-ownership validate-openusd-lab-ownership validate-openusd-lab run-openusd-lab inspect-openusd-lab prepare-usd-composition prepare-usd-composition-ownership validate-usd-composition-ownership run-usd-composition-assets run-usd-composition inspect-usd-composition test-phase5 prepare-physics-foundations prepare-physics-foundations-ownership validate-physics-foundations-ownership create-physics-scene run-physics-experiment inspect-physics-results compare-physics-runs test-phase6 prepare-interactive-studio prepare-interactive-studio-ownership validate-interactive-studio-ownership start-interactive-studio stop-interactive-studio restart-interactive-studio status-interactive-studio logs-interactive-studio shell-interactive-studio validate-interactive-studio test-phase7 run-headless run-gui logs stop launch-headless launch-gui validate-host
 
 help:
 	@printf '%s\n' "Targets:"
@@ -36,6 +36,17 @@ help:
 	@printf '%s\n' "  make inspect-physics-results - inspect the Phase 6 outputs in read-only mode"
 	@printf '%s\n' "  make compare-physics-runs - compare the two Phase 6 runs"
 	@printf '%s\n' "  make test-phase6 - run Phase 6 static refinement checks"
+	@printf '%s\n' "  make prepare-interactive-studio - create the Phase 7 interactive workspace tree"
+	@printf '%s\n' "  make prepare-interactive-studio-ownership - prepare Phase 7 ownership when CONFIRM_CHOWN=1"
+	@printf '%s\n' "  make validate-interactive-studio-ownership - verify Phase 7 ownership and shared-asset policy"
+	@printf '%s\n' "  make start-interactive-studio - launch the persistent Interactive Studio container"
+	@printf '%s\n' "  make stop-interactive-studio - stop the Interactive Studio container and retain it"
+	@printf '%s\n' "  make restart-interactive-studio - restart Interactive Studio through stop then start"
+	@printf '%s\n' "  make status-interactive-studio - report Interactive Studio readiness state"
+	@printf '%s\n' "  make logs-interactive-studio - follow Interactive Studio logs"
+	@printf '%s\n' "  make shell-interactive-studio - open a shell in Interactive Studio"
+	@printf '%s\n' "  make validate-interactive-studio - run Phase 7 launch prerequisite validation"
+	@printf '%s\n' "  make test-phase7 - run Phase 7 static refinement checks"
 	@printf '%s\n' "  make run-headless     - launch Isaac Sim headless via Compose"
 	@printf '%s\n' "  make run-gui          - launch Isaac Sim GUI via Compose"
 	@printf '%s\n' "  make logs             - follow Isaac Sim container logs"
@@ -147,6 +158,39 @@ compare-physics-runs:
 
 test-phase6:
 	./tests/phase6-refinement.sh all
+
+prepare-interactive-studio:
+	./scripts/prepare-interactive-studio.sh
+
+prepare-interactive-studio-ownership:
+	./scripts/prepare-interactive-studio-ownership.sh
+
+validate-interactive-studio-ownership:
+	./scripts/validate-interactive-studio-ownership.sh
+
+start-interactive-studio:
+	./scripts/start-interactive-studio.sh
+
+stop-interactive-studio:
+	./scripts/stop-interactive-studio.sh
+
+restart-interactive-studio:
+	./scripts/restart-interactive-studio.sh
+
+status-interactive-studio:
+	./scripts/status-interactive-studio.sh
+
+logs-interactive-studio:
+	./scripts/logs-interactive-studio.sh
+
+shell-interactive-studio:
+	./scripts/shell-interactive-studio.sh
+
+validate-interactive-studio:
+	./scripts/validate-interactive-studio.sh
+
+test-phase7:
+	./tests/phase7-refinement.sh
 
 run-headless:
 	./launch-headless.sh

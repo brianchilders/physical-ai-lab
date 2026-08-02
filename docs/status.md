@@ -30,16 +30,17 @@
 - Phase 4 overall complete
 - Phase 5 USD composition foundations complete
 - Phase 6 physics foundations complete
+- Phase 7 Interactive Studio complete, including persistent launch, Windows WebRTC connection, workspace save, lifecycle recreation, and reconnect validation
 
 ## Current Phase
 
-Phase 4 complete. Phase 5 is complete. Phase 6 physics foundations is complete.
+Phase 4 complete. Phase 5 is complete. Phase 6 physics foundations is complete. Phase 7 Interactive Studio is complete.
 
 ## Pending Work
 
 - ROS 2 integration deferred
 - DGX Spark integration deferred
-- Phase 7 interactive Isaac Sim development environment planning pending
+- Phase 8 sensor foundations and device bring-up remain next
 
 ## Known Limitations
 
@@ -52,9 +53,10 @@ Phase 4 complete. Phase 5 is complete. Phase 6 physics foundations is complete.
 - `PRIVACY_CONSENT` defaults to `N` unless explicitly enabled
 - the approved runtime ownership prep target is guarded and limited to the dedicated Isaac directories only
 - the smoke-test teardown path now uses immediate shutdown to avoid the post-close segmentation fault seen in the first attempt
+- the Phase 7 stop path retained the exact Interactive Studio container, but Docker stop ultimately returned exit code 137 after the graceful timeout and required forced termination
 - `make stop` requires the headless Compose profile to remove the project cleanly
 - Phase 5 composition work is complete and now provides the wrapper-stage foundation for future real-world environment ingestion such as OVER USDZ captures
 
 ## Next Milestone
 
-Begin Phase 7 interactive Isaac Sim development environment planning.
+Continue Phase 8 sensor foundations and device bring-up.

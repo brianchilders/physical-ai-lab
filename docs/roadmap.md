@@ -117,6 +117,10 @@ Validation results:
 
 ## Phase 7
 
+Status: complete
+
+Interactive Studio is the Phase 7 development environment.
+
 Goal:
 
 - introduce an interactive Isaac Sim development environment in a controlled, documented way
@@ -127,6 +131,24 @@ Deliverables:
 - WebRTC-oriented simulator access notes
 - separation from one-shot production containers
 - iterative scene-debug-edit loop guidance
+- explicit host-IP requirement for remote streaming
+- read-only Shared Assets mounting
+- writable Interactive Workspace separation
+- initial Windows WebRTC connection and interactive save acceptance validated
+- lifecycle recreation and reconnect persistence validated
+- Hub Workstation Cache downloaded as a persistent package but intentionally deferred
+
+Validation results:
+
+- repository scaffold complete
+- storage and ownership validation complete
+- persistent container launch complete
+- Windows WebRTC connection complete
+- interactive scene authoring complete
+- workspace persistence complete
+- lifecycle recreation complete
+- Windows reconnect and scene reopen complete
+- Phase 7 overall complete
 
 ## Phase 8
 
